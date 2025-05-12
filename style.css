@@ -1,0 +1,899 @@
+
+:root {
+    --primary-color: #000000;
+    --secondary-color: #ba181b;
+    --light-text: #FFFFFF;
+    --off-white-text: #e0e0e0;
+    --dark-text: #FFFFFF; /* Assuming dark theme where body text is light */
+    --darker-bg: #0B090A;
+    --card-bg: #1a1a1a;
+    --border-color: #333333;
+    --input-bg: #2c2c2c;
+    --heading-color: var(--light-text);
+    --glow-shadow: 0 0 15px rgba(186, 24, 27, 0.6);
+    --transition-speed: 0.3s;
+    --border-radius: 8px;
+}
+
+*,
+*::before,
+*::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+    font-size: 100%;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+html::-webkit-scrollbar {
+    display: none;
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    line-height: 1.7;
+    color: var(--dark-text); /* Default text color for the body */
+    background-color: var(--primary-color);
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+::selection {
+    background-color: var(--secondary-color);
+    color: var(--light-text);
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-weight: 600;
+    margin-bottom: 1rem;
+    color: var(--heading-color);
+    line-height: 1.3;
+}
+
+h1 { font-size: clamp(2.8rem, 6vw, 4.5rem); }
+h2 { font-size: clamp(2rem, 5vw, 2.8rem); text-align: center; margin-bottom: 3.5rem; }
+h3 { font-size: clamp(1.2rem, 4vw, 1.5rem); }
+
+p {
+    margin-bottom: 1.2rem;
+    color: var(--off-white-text);
+    max-width: 70ch;
+}
+
+.about-text p { /* Center paragraphs within about-text if it's narrower than 70ch */
+    margin-left: auto;
+    margin-right: auto;
+}
+
+a {
+    text-decoration: none;
+    color: var(--secondary-color);
+    transition: color var(--transition-speed) ease;
+}
+
+a:hover, a:focus {
+    color: var(--light-text);
+    outline: none;
+}
+
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+textarea:focus-visible {
+    outline: 2px solid var(--secondary-color);
+    outline-offset: 2px;
+}
+
+img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+    object-fit: cover;
+}
+
+.section {
+    padding: 5rem 1rem;
+    overflow: hidden;
+    background-color: var(--primary-color);
+}
+
+.section.bg-darker {
+    background-color: var(--darker-bg);
+}
+
+.container {
+    max-width: 1140px;
+    margin: 0 auto;
+    padding: 0 1.5rem;
+}
+
+/* Sprinkles Canvas */
+#sprinkles-canvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    pointer-events: none;
+}
+
+/* Header */
+#main-header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    z-index: 1000;
+    border-bottom: 1px solid var(--border-color);
+    transition: top 0.4s ease-in-out, background-color var(--transition-speed) ease;
+}
+
+#main-header.nav-hidden {
+    top: -120px; /* Adjust based on actual header height */
+}
+
+#main-header nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    min-height: 70px;
+}
+
+.logo {
+    color: var(--light-text);
+    font-size: 1.6rem;
+    font-weight: 700;
+    letter-spacing: -1px;
+}
+
+.nav-links {
+    list-style: none;
+    display: flex;
+    align-items: center;
+}
+
+.nav-links li {
+    margin-left: 2.5rem;
+}
+
+.nav-links a {
+    color: var(--off-white-text);
+    font-weight: 500;
+    padding: 0.5rem 0.2rem;
+    position: relative;
+    transition: color var(--transition-speed) ease;
+}
+
+.nav-links a::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background-color: var(--secondary-color);
+    transition: width var(--transition-speed) ease;
+}
+
+.nav-links a:hover,
+.nav-links a:focus,
+.nav-links a.active { /* Added .active class styling */
+    color: var(--secondary-color);
+}
+
+.nav-links a:hover::after,
+.nav-links a:focus::after,
+.nav-links a.active::after { /* Added .active class styling */
+    width: 100%;
+}
+
+.burger {
+    display: none;
+    cursor: pointer;
+    background: none;
+    border: none;
+    padding: 0.5rem;
+    z-index: 1001; /* Ensure burger is above nav-links when closed */
+}
+
+.burger div {
+    width: 28px;
+    height: 3px;
+    background-color: var(--light-text);
+    margin: 6px 0;
+    transition: all 0.4s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+    border-radius: 2px;
+}
+
+/* Burger animation */
+.toggle .line1 {
+    transform: rotate(-45deg) translate(-7px, 7px);
+}
+.toggle .line2 {
+    opacity: 0;
+    transform: scale(0);
+}
+.toggle .line3 {
+    transform: rotate(45deg) translate(-7px, -7px);
+}
+
+/* Hero Section */
+.hero-section {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    min-height: 90vh;
+    padding-top: 100px; /* Space for fixed header */
+    padding-bottom: 4rem;
+    color: var(--light-text);
+    background: linear-gradient(180deg, rgba(0,0,0,0.8) 0%, var(--primary-color) 90%),
+                radial-gradient(circle at top center, rgba(186, 24, 27, 0.1), transparent 60%);
+    position: relative;
+}
+
+.hero-content h1 {
+    color: var(--light-text);
+    display: inline-block;
+    position: relative;
+    animation: textFloat 3s ease-in-out infinite;
+    text-shadow: 0 0 10px rgba(186, 24, 27, 0.6);
+}
+
+.hero-content .tagline {
+    font-size: 1.15rem;
+    margin-bottom: 2.5rem;
+    color: var(--off-white-text);
+    opacity: 0.9;
+}
+.hero-content .tagline i {
+    margin-right: 0.5rem;
+    color: var(--secondary-color);
+}
+
+.hero-buttons {
+     display: flex;
+     justify-content: center;
+     gap: 1rem;
+     flex-wrap: wrap; /* Allow buttons to wrap on smaller screens */
+}
+
+.btn {
+    display: inline-block;
+    padding: 0.8rem 2.2rem;
+    border-radius: 50px; /* Pill shape */
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    transition: all var(--transition-speed) ease;
+    margin: 0.5rem 0; /* Add some margin for wrapped buttons */
+    border: 2px solid transparent;
+    cursor: pointer;
+    font-size: 0.9rem;
+    box-shadow: none; /* Remove default browser button shadow */
+}
+
+.btn-primary {
+    background-color: var(--secondary-color);
+    color: var(--light-text);
+    border-color: var(--secondary-color);
+}
+
+.btn-primary:hover, .btn-primary:focus {
+    background-color: #d11a1e; /* Slightly darker red */
+    color: var(--light-text);
+    transform: scale(1.05);
+    box-shadow: var(--glow-shadow);
+    border-color: #d11a1e;
+}
+
+.btn-secondary {
+    background-color: transparent;
+    color: var(--light-text);
+    border: 2px solid var(--secondary-color);
+}
+
+.btn-secondary:hover, .btn-secondary:focus {
+    background-color: var(--secondary-color);
+    color: var(--light-text);
+    transform: scale(1.05);
+    border-color: var(--secondary-color); /* Ensure border stays */
+}
+
+.scroll-down {
+    position: absolute;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    color: var(--secondary-color);
+    font-size: 1.8rem;
+    animation: bounce 2.5s infinite ease-in-out;
+    opacity: 0.8;
+}
+.scroll-down:hover {
+     opacity: 1;
+     color: var(--light-text);
+}
+
+/* About Us Section */
+.about-container {
+    display: grid;
+    grid-template-columns: 1fr 1.5fr; /* Image column, Text column */
+    gap: 3rem;
+    align-items: center;
+}
+
+.about-text {
+    text-align: left; /* Default for larger screens */
+}
+.about-text p:last-child {
+    margin-bottom: 0;
+}
+
+.about-image {
+    position: relative;
+    max-width: 300px; /* Control max size of the hexagon image container */
+    width: 100%;
+    margin: 0 auto; /* Center the image container */
+    animation: imageFloat 3s ease-in-out infinite;
+    /* Hexagon proportions: aspect-ratio: 1 / 1.154 (width / height for regular hexagon)*/
+    /* For clip-path, padding/background not strictly needed unless for effects */
+    aspect-ratio: 1 / 1.154; /* Maintain hexagon shape */
+    padding: 0;
+    background: none;
+    filter: none;
+}
+
+.about-image img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    /* Regular hexagon */
+    clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+    outline: none;
+    border: none;
+    box-shadow: none;
+    position: relative; /* For z-index if needed */
+    z-index: 1;
+    transition: transform 0.4s ease;
+}
+.about-image:hover img {
+     transform: scale(1.05);
+}
+
+/* Skills Section (Services) */
+.skills-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 2rem;
+}
+
+.skill-card {
+    background-color: var(--card-bg);
+    padding: 2.5rem 1.5rem;
+    text-align: center;
+    border-radius: var(--border-radius);
+    border: 1px solid var(--border-color);
+    transition: transform var(--transition-speed) ease, border-color var(--transition-speed) ease, box-shadow var(--transition-speed) ease;
+    box-shadow: none; /* Base state no shadow */
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Center icon and text */
+}
+
+.skill-card:hover {
+    transform: translateY(-10px) scale(1.02);
+    border-color: var(--secondary-color);
+    box-shadow: var(--glow-shadow);
+}
+
+.skill-card i {
+    color: var(--secondary-color);
+    margin-bottom: 1.5rem;
+    font-size: 2.8rem; /* Adjusted for better visual balance */
+    transition: transform var(--transition-speed) ease, color var(--transition-speed) ease;
+}
+.skill-card:hover i {
+    transform: scale(1.1);
+    color: var(--light-text); /* Change icon color on hover */
+}
+
+.skill-card h3 {
+    font-size: 1.3rem;
+    margin-bottom: 0.75rem;
+    color: var(--light-text);
+}
+
+.skill-card p {
+    font-size: 0.9rem;
+    color: var(--off-white-text);
+    line-height: 1.6;
+    margin-bottom: 0; /* Remove bottom margin if it's the last element */
+}
+
+/* Portfolio Section */
+.projects-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 2.5rem;
+}
+
+.project-card {
+    background-color: var(--darker-bg); /* Darker background for card body */
+    border-radius: var(--border-radius);
+    overflow: hidden; /* Important for image hover effect and border-radius */
+    border: 1px solid var(--border-color);
+    transition: transform var(--transition-speed) ease, border-color var(--transition-speed) ease, box-shadow var(--transition-speed) ease;
+    display: flex;
+    flex-direction: column; /* Ensure info content pushes links down */
+    box-shadow: none; /* Base state */
+}
+
+.project-card:hover {
+    transform: translateY(-10px);
+    border-color: var(--secondary-color);
+    box-shadow: var(--glow-shadow);
+}
+
+.project-card img {
+    width: 100%;
+    aspect-ratio: 16 / 9; /* Maintain aspect ratio */
+    object-fit: cover;
+    border-bottom: 3px solid var(--secondary-color); /* Accent line */
+    filter: grayscale(20%);
+    transition: filter var(--transition-speed) ease, transform var(--transition-speed) ease;
+}
+.project-card:hover img {
+    filter: grayscale(0%);
+    transform: scale(1.03); /* Slight zoom on image */
+}
+
+.project-info {
+    padding: 1.5rem;
+    flex-grow: 1; /* Allows this div to take available space */
+    display: flex;
+    flex-direction: column; /* Stack children vertically */
+}
+
+.project-info h3 {
+    margin-bottom: 0.75rem;
+    color: var(--light-text);
+}
+
+.project-info p {
+    font-size: 0.95rem;
+    margin-bottom: 1.5rem;
+    flex-grow: 1; /* Pushes tools and links down */
+    color: var(--off-white-text);
+}
+
+.project-tools {
+    margin-bottom: 1.5rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.tool-tag {
+    background-color: var(--card-bg); /* Slightly lighter than project card body */
+    color: var(--off-white-text);
+    padding: 0.4rem 0.8rem;
+    border-radius: 15px; /* Pill-like tags */
+    font-size: 0.8rem;
+    border: 1px solid var(--border-color);
+    display: inline-flex; /* Align icon and text */
+    align-items: center;
+    gap: 0.3rem;
+    transition: background-color var(--transition-speed) ease, color var(--transition-speed) ease;
+}
+.tool-tag:hover {
+     background-color: var(--secondary-color);
+     color: var(--light-text);
+     border-color: var(--secondary-color);
+}
+.tool-tag i {
+    color: var(--secondary-color); /* Icon color */
+    transition: color var(--transition-speed) ease;
+}
+.tool-tag:hover i {
+     color: var(--light-text);
+}
+
+.project-links {
+    margin-top: auto; /* Pushes to the bottom if project-info has flex-grow */
+    display: flex;
+    gap: 0.8rem;
+    flex-wrap: wrap;
+}
+
+.btn-small {
+    padding: 0.6rem 1.5rem;
+    font-size: 0.8rem;
+}
+
+/* Contact Section */
+.contact-subtitle {
+    text-align: center;
+    font-size: 1.15rem;
+    margin-top: -2.5rem; /* Pull up under the H2 */
+    margin-bottom: 3.5rem;
+    color: var(--off-white-text);
+    max-width: 60ch; /* Limit line length */
+    margin-left: auto;
+    margin-right: auto;
+}
+.contact-container {
+    display: grid; /* Can be 1fr or more for form + details */
+    grid-template-columns: 1fr; /* For just details or centered form */
+    gap: 1rem; /* Reduced gap as it's a single column for now */
+    justify-items: center; /* Center the .contact-details */
+}
+
+.contact-details {
+    margin: 0 auto; /* Center the block of contact items */
+    width: fit-content; /* Shrink to content */
+    max-width: 100%; /* Prevent overflow */
+}
+
+.contact-item {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start; /* Align items to the start */
+    margin-bottom: 1.5rem;
+    gap: 1rem;
+}
+
+.contact-item i {
+    font-size: 1.6rem;
+    color: var(--secondary-color);
+    width: 30px; /* Fixed width for icon alignment */
+    text-align: center;
+    transition: transform var(--transition-speed) ease;
+    flex-shrink: 0; /* Prevent icon from shrinking */
+}
+.contact-item:hover i {
+     transform: scale(1.1);
+}
+
+.contact-item span, .contact-item a {
+    font-size: 1.05rem;
+    color: var(--light-text);
+    word-break: break-word; /* Prevent long emails/links from breaking layout */
+    text-align: left; /* Ensure text aligns left */
+}
+.contact-item a:hover {
+    color: var(--secondary-color);
+    text-decoration: underline;
+}
+
+/* NEW STYLES: Team Section */
+.team-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 2rem;
+}
+
+.team-member-card {
+    background-color: var(--card-bg);
+    padding: 2rem 1.5rem;
+    text-align: center;
+    border-radius: var(--border-radius);
+    border: 1px solid var(--border-color);
+    transition: transform var(--transition-speed) ease, border-color var(--transition-speed) ease, box-shadow var(--transition-speed) ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.team-member-card:hover {
+    transform: translateY(-10px);
+    border-color: var(--secondary-color);
+    box-shadow: var(--glow-shadow);
+}
+.team-member-card img {
+    width: 130px;
+    height: 130px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-bottom: 1.5rem;
+    border: 4px solid var(--secondary-color);
+    transition: transform var(--transition-speed) ease, border-color var(--transition-speed) ease;
+}
+.team-member-card:hover img {
+    transform: scale(1.05);
+    border-color: var(--light-text);
+}
+.team-member-card h3 {
+    font-size: 1.4rem;
+    margin-bottom: 0.25rem;
+    color: var(--light-text);
+}
+.team-role {
+    font-size: 0.9rem;
+    color: var(--secondary-color);
+    font-weight: 500;
+    margin-bottom: 1rem;
+    letter-spacing: 0.5px;
+}
+.team-bio {
+    font-size: 0.9rem;
+    color: var(--off-white-text);
+    margin-bottom: 1.5rem;
+    line-height: 1.6;
+}
+.team-social-links {
+    display: flex;
+    gap: 1.2rem;
+    margin-top: auto; /* Pushes to bottom if card height varies */
+    padding-top: 1rem;
+}
+.team-social-links a {
+    color: var(--off-white-text);
+    font-size: 1.5rem;
+    transition: color var(--transition-speed) ease, transform var(--transition-speed) ease;
+}
+.team-social-links a:hover {
+    color: var(--secondary-color);
+    transform: translateY(-3px);
+}
+
+/* NEW STYLES: Testimonials Section */
+/* #testimonials uses .bg-darker, so cards should use --card-bg or --primary-color if lighter */
+.testimonials-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+}
+
+.testimonial-card {
+    background-color: var(--card-bg); /* Match other card backgrounds */
+    padding: 2.5rem 2rem;
+    border-radius: var(--border-radius);
+    border: 1px solid var(--border-color);
+    text-align: center;
+    transition: transform var(--transition-speed) ease, border-color var(--transition-speed) ease, box-shadow var(--transition-speed) ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative; /* For potential pseudo-elements like quotes */
+}
+.testimonial-card:hover {
+    transform: translateY(-10px);
+    border-color: var(--secondary-color);
+    box-shadow: var(--glow-shadow);
+}
+.testimonial-avatar {
+    width: 90px;
+    height: 90px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-bottom: 1.5rem;
+    border: 3px solid var(--secondary-color);
+}
+.testimonial-quote {
+    font-size: 1rem;
+    color: var(--off-white-text);
+    margin-bottom: 1.5rem;
+    font-style: italic;
+    line-height: 1.7;
+    position: relative;
+    padding: 0 0.5rem; /* Space for quotes */
+}
+.testimonial-quote i.fa-quote-left {
+    margin-right: 0.5em;
+    color: var(--secondary-color);
+    font-size: 0.9em;
+}
+.testimonial-quote i.fa-quote-right {
+    margin-left: 0.5em;
+    color: var(--secondary-color);
+    font-size: 0.9em;
+}
+.testimonial-author {
+    font-weight: 600;
+    color: var(--light-text);
+    font-size: 1rem;
+    margin-top: auto; /* Push to bottom */
+    padding-top: 0.5rem;
+}
+.testimonial-author::before { /* Optional separator line */
+    content: '';
+    display: block;
+    width: 50px;
+    height: 2px;
+    background-color: var(--secondary-color);
+    margin: 1rem auto;
+}
+
+
+/* Footer */
+#main-footer {
+    background-color: var(--darker-bg);
+    color: #aaa; /* Lighter grey for footer text */
+    text-align: center;
+    padding: 2rem 1rem;
+    margin-top: auto; /* Pushes footer to bottom if content is short */
+    font-size: 0.9rem;
+    border-top: 1px solid var(--border-color);
+}
+#main-footer .container { /* Ensure container padding is applied */
+    padding: 0 1rem;
+}
+
+/* Keyframes */
+@keyframes bounce {
+    0%, 100% { transform: translateX(-50%) translateY(0); opacity: 0.7; }
+    50% { transform: translateX(-50%) translateY(-12px); opacity: 1;}
+}
+
+@keyframes imageFloat {
+    0%, 100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-12px);
+    }
+}
+@keyframes textFloat { /* For Hero H1 */
+    0%, 100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-12px);
+    }
+}
+
+/* Responsive Media Queries */
+@media (max-width: 992px) { /* Adjusted breakpoint for nav links */
+    .nav-links li {
+        margin-left: 1.5rem;
+    }
+    .about-container {
+        grid-template-columns: 1fr; /* Stack image and text */
+        gap: 2rem;
+        text-align: center;
+    }
+    .about-image {
+        margin-bottom: 1.5rem; /* Space between image and text when stacked */
+        max-width: 250px; /* Slightly smaller on medium screens */
+        order: -1; /* Image on top */
+    }
+    .about-text {
+        text-align: center;
+    }
+     .team-grid {
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    }
+     .testimonials-grid {
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    }
+}
+
+@media (max-width: 768px) {
+    html { font-size: 95%; }
+    .section { padding: 4rem 1rem; }
+    h2 { margin-bottom: 2.5rem; }
+
+    #main-header nav {
+        min-height: 60px;
+        padding: 0 1rem; /* Ensure nav content has padding */
+    }
+    .logo { font-size: 1.4rem; }
+
+    .nav-links {
+        position: fixed;
+        top: -100vh; /* Start off-screen */
+        left: 0;
+        min-height: 100vh;
+        width: 100%;
+        background-color: rgba(11, 9, 10, 0.98); /* Darker with opacity */
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        transition: top 0.5s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+        z-index: 999; /* Below burger button but above page content */
+        overflow-y: auto;
+        padding: 2rem 0;
+    }
+    .nav-links li {
+        margin: 1.8rem 0;
+        opacity: 1; /* Ensure visible when active */
+        transform: translateY(0); /* Reset any transform */
+    }
+    .nav-links a {
+        font-size: 1.6rem; /* Larger for mobile menu */
+         color: var(--light-text); /* Ensure links are visible */
+         padding: 0.5rem 1rem; /* Better touch targets */
+    }
+     .nav-links a:hover, .nav-links a.active {
+         color: var(--secondary-color); /* Hover/active color */
+     }
+     .nav-links a::after { /* Make underline more prominent on mobile */
+        bottom: -4px;
+     }
+
+    .nav-links.nav-active {
+        top: 0; /* Slide in from top */
+    }
+
+    .burger { display: block; } /* Show burger menu */
+
+    .hero-buttons { gap: 0.8rem; }
+    .btn { padding: 0.7rem 1.8rem; font-size: 0.85rem;}
+
+    .skills-grid { grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1.5rem; }
+    .skill-card { padding: 2rem 1rem; }
+
+    .projects-grid { grid-template-columns: 1fr; gap: 2rem; } /* Stack projects */
+    
+    .team-grid {
+        grid-template-columns: 1fr; /* Stack team members */
+    }
+    .testimonials-grid {
+        grid-template-columns: 1fr; /* Stack testimonials */
+    }
+
+    .contact-container { grid-template-columns: 1fr; gap: 1rem; }
+    .contact-details {
+         margin-bottom: 1rem;
+         width: auto; /* Allow to fill available space */
+         align-items: flex-start; /* Align items inside contact-details to start */
+    }
+    .contact-item { /* Ensure items stack nicely if text wraps */
+        margin-bottom: 1.5rem;
+        width: auto; /* Allow natural width */
+    }
+
+    #main-header.nav-hidden { top: -100px; } /* Adjust for mobile header height */
+}
+
+@media (max-width: 480px) {
+    html { font-size: 90%; }
+    h1 { font-size: 2.5rem; } /* clamp was already handling this well */
+    h2 { font-size: 1.8rem; }
+    .container { padding: 0 1rem; } /* Standard padding for small screens */
+
+    .hero-buttons { flex-direction: column; align-items: center; }
+    .btn { width: 80%; text-align: center; } /* Make buttons take more width */
+
+    .skills-grid { grid-template-columns: 1fr; } /* Stack skills on very small screens */
+    /* .skill-card already responsive */
+
+    .contact-item span, .contact-item a { font-size: 1rem; }
+
+    .about-container { /* Already stacked, ensure text align is good */
+        text-align: center;
+    }
+    .about-image { /* Smaller hexagon on mobile */
+        max-width: 180px;
+        margin-top: 0; /* Reset margin if any from previous rules */
+        margin-bottom: 1.5rem;
+        /* order: 0; Redundant if already -1 from medium screen */
+    }
+    .about-text {
+        text-align: center;
+        /* order: 1; Redundant if already default */
+    }
+    .team-member-card img {
+        width: 100px;
+        height: 100px;
+    }
+    .testimonial-avatar {
+        width: 70px;
+        height: 70px;
+    }
+}
